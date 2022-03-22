@@ -1,5 +1,10 @@
 import PolicyStore from '../stores/PolicyStore.js'
 import React from 'react'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+
 
 class PolicyForm extends React.Component {
   constructor(props) {
@@ -25,24 +30,27 @@ class PolicyForm extends React.Component {
   render() {
     return (
       <div>
-          <form onSubmit={this.handleSubmit}>
-          <label>
-            Request Times:
-            <input name="req_count" type="number" value={this.state.req_count} onChange={this.handleChange} />
-          </label>
-          <br/>
-          <label>
-            Request Duration:
-            <input name="req_duration" type="number" value={this.state.req_duration} onChange={this.handleChange} />
-          </label>
-          <br/>
-          <label>
-            Blocked Duration:
-            <input name="block_duration" type="number" value={this.state.block_duration} onChange={this.handleChange} />
-          </label>
-          <br/>
-          <input type="submit" value="Submit" />
-        </form>
+        <Form onSubmit={this.handleSubmit}>
+          <Row className="mb-3">
+            <Form.Group as={Col}>
+              <Form.Label>Request Times:</Form.Label>
+              <Form.Control size="sm" name="req_count" type="number" value={this.state.req_count} onChange={this.handleChange} />
+            </Form.Group>
+
+            <Form.Group as={Col}>
+              <Form.Label>Request Duration:</Form.Label>
+              <Form.Control size="sm" name="req_duration" type="number" value={this.state.req_duration} onChange={this.handleChange} />
+            </Form.Group>
+
+            <Form.Group as={Col}>
+              <Form.Label>Blocked Duration:</Form.Label>
+              <Form.Control size="sm" name="block_duration" type="number" value={this.state.block_duration} onChange={this.handleChange} />
+            </Form.Group>
+          </Row>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form>
       </div>
     );
   }

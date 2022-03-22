@@ -38,7 +38,10 @@ class Policy extends React.Component {
   render() {
     return (
       <div>
-        <div>
+        <h2>
+          Policy
+        </h2>
+      <div>
           Current Policy: {this.state.req_count} request times 
           in {this.state.req_duration} minutes
           blocked for {this.state.block_duration} minutes

@@ -1,8 +1,10 @@
-import {REMOVE_IP} from '../ActionTypes.js'
+import {GET_BLACKLIST, REMOVE_IP} from '../ActionTypes.js'
 import AppDispatcher from '../AppDispatcher.js'
 import {EventEmitter, CHANGE_EVENT} from 'events'
+import {get_blacklist} from '../api.js'
 
-var bannedIps = [
+
+const bannedIps = [
   {
     'id': 1,
     'start_t': new Date(Date.UTC(96, 12, 5, 0, 0, 0)),
@@ -35,6 +37,15 @@ const BannedIpStore = Object.assign({}, EventEmitter.prototype, {
 });
 
 BannedIpStore.dispatchToken = AppDispatcher.register((action) => {
+  switch(action.type) {
+    case GET_BLACKLIST:
+      get_blacklist().
+        then(res => {
+          const blacklist = res.data;
+          console.log(res);
+        });
+      break;
+  }
   console.log(action)
   if (action.type == REMOVE_IP) {
     for(let i=0; i<bannedIps.length; i++) {

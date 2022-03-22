@@ -1,6 +1,9 @@
 import React from 'react'
 import BannedIpStore from '../stores/BannedIpStore.js'
 import * as Actions from '../Actions.js'
+import Table from 'react-bootstrap/Table'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 class BannedIpTable extends React.Component {
   constructor(props) {
@@ -9,7 +12,7 @@ class BannedIpTable extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.state = {bannedIps: new Array()};
     var bannedIps = BannedIpStore.getBannedIps();
-    console.log(bannedIps);
+    Actions.get_blacklist();
     for(let i=0; i<bannedIps.length; i++) {
       var bannedIp = Object.assign({}, bannedIps[i]);
       this.state.bannedIps.push(bannedIp);
@@ -38,40 +41,47 @@ class BannedIpTable extends React.Component {
 
   render() {
     const bannedIpTable = this.state.bannedIps.map((bannedIp) =>
+      <tbody>
         <tr key={bannedIp.id}>
-          <th> {bannedIp.id} </th>
-          <th> {bannedIp.ip} </th>
-          <th> {bannedIp.start_t.toDateString()} </th>
-          <th> {bannedIp.duration} </th>
+          <td> {bannedIp.id} </td>
+          <td> {bannedIp.ip} </td>
+          <td> {bannedIp.start_t.toDateString()} </td>
+          <td> {bannedIp.duration} </td>
       {bannedIp.removed ? 
-          <th>yes</th>
+          <td>yes</td>
         :
-          <th>no</th>
+          <td>no</td>
       }
 
-      <th>
-        <form onSubmit={(e) => this.removeIp(bannedIp.id, e)}>
-          <button type="submit">
+      <td>
+        <Form onSubmit={(e) => this.removeIp(bannedIp.id, e)}>
+          <Button type="submit">
             remove
-          </button>
-        </form>
-      </th>
+          </Button>
+        </Form>
+      </td>
         </tr>
+    </tbody>
       );
     return (
-    <table>
-      <tbody>
-        <tr>
-          <th> id </th>
-          <th> ip </th>
-          <th> start time </th>
-          <th> duration(min) </th>
-          <th> removed </th>
-          <th> remove button </th>
-        </tr>
-        {bannedIpTable}
-      </tbody>
-    </table>
+      <div>
+        <h2>
+          Blacklist
+        </h2>
+        <Table striped borderless hover size="sm">
+          <thead>
+            <tr>
+              <th> id </th>
+              <th> ip </th>
+              <th> start time </th>
+              <th> duration(min) </th>
+              <th> removed </th>
+              <th> remove button </th>
+            </tr>
+          </thead>
+            {bannedIpTable}
+        </Table>
+    </div>
     )
   }
 

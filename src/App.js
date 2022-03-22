@@ -8,11 +8,12 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-       <a href="https://fontmeme.com/add-borders/"><img src="https://fontmeme.com/permalink/220321/d404677e571fc4deeae19a7c2199fba3.png"/></a>
+        <a class="App-logo" href="https://fontmeme.com/add-borders/"><img src="https://fontmeme.com/permalink/220321/d404677e571fc4deeae19a7c2199fba3.png"/></a>
         <BannedIpTable/>
         <Policy/>
       </header>
-    </div>
+
+   </div>
   );
 }
 
