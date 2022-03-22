@@ -11,14 +11,20 @@ class Policy extends React.Component {
 
     this.onPolicyFormUpdate = this.onPolicyFormUpdate.bind(this);
     this.state = Object.assign({}, PolicyStore.getPolicyValues());
+    Actions.get_policy();
   }
 
   onPolicyFormUpdate(new_req_count, new_req_duration, new_block_duration) {
     Actions.change_policy(new_req_count, new_req_duration, new_block_duration);
+    Actions.get_policy();
   }
 
   componentDidMount() {
-   PolicyStore.addChangeListener(this.onChange);
+    PolicyStore.addChangeListener(this.onChange);
+    Actions.get_policy();
+  }
+  componentDidUpdate() {
+    Actions.get_policy();
   }
 
   componentWillUnmount() {

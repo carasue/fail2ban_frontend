@@ -1,13 +1,13 @@
 import AppDispatcher from '../AppDispatcher.js';
-import {CHANGE_POLICY} from '../ActionTypes.js'
+import {GET_POLICY, CHANGE_POLICY} from '../ActionTypes.js'
 import {EventEmitter, CHANGE_EVENT} from 'events'
+import {get_policy, change_policy} from '../api.js'
 
-var policyValues = {
+const policyValues = {
   'req_count': 0,
   'req_duration': 0,
   'block_duration': 0,
-};
-
+}
 const PolicyStore = Object.assign({}, EventEmitter.prototype, {
   getPolicyValues: function() {
     return policyValues;
@@ -23,15 +23,36 @@ const PolicyStore = Object.assign({}, EventEmitter.prototype, {
   }
 });
 
+
 PolicyStore.dispatchToken = AppDispatcher.register((action) => {
-  if (action.type == CHANGE_POLICY) {
-    policyValues = {
-      'req_count': action.req_count,
-      'req_duration': action.req_duration,
-      'block_duration': action.block_duration,
-    };
-    // #TODO: save to the server here
-    PolicyStore.emitChange();
+  switch(action.type) {
+    case GET_POLICY:
+      get_policy()
+      .then(res => {
+        const policy = res.data;
+        if (policy['attempts'] == policyValues['req_count'] && policy['period'] == policyValues['req_duration']*60000000000 && policy['blocktime'] == policyValues['block_duration']*60000000000) {
+          return false;
+        }
+        policyValues['req_count'] = policy['attempts'];
+        // convert nanoseconds to miniutes
+        policyValues['req_duration'] = policy['period']/60000000000;
+        policyValues['block_duration'] = policy['blocktime']/60000000000;
+        PolicyStore.emitChange();
+      });
+      break;
+    case CHANGE_POLICY:
+      const policy = {
+        'attempts': parseInt(action.req_count),
+        'period': action.req_duration * 60000000000,
+        'blocktime': action.block_duration * 60000000000,
+      };
+      policyValues['req_count'] = policy['attempts'];
+      // convert nanoseconds to miniutes
+      policyValues['req_duration'] = policy['period']/60000000000;
+      policyValues['block_duration'] = policy['blocktime']/60000000000;
+      change_policy(policy);
+      PolicyStore.emitChange();
+      break;
   }
 });
 
