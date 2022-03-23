@@ -25,10 +25,10 @@ export const get_blacklist = () => {
   });
 };
 
-export const remove_ip = (id) => {
+export const remove_ip = (ip) => {
   AppDispatcher.dispatch({
     type: ActionTypes.REMOVE_IP,
-    id: id
+    ip: ip
   });
 };
 

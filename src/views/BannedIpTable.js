@@ -10,23 +10,28 @@ class BannedIpTable extends React.Component {
     super(props);
 
     this.onChange = this.onChange.bind(this);
-    this.state = {bannedIps: new Array()};
-    var bannedIps = BannedIpStore.getBannedIps();
-    Actions.get_blacklist();
-    for(let i=0; i<bannedIps.length; i++) {
-      var bannedIp = Object.assign({}, bannedIps[i]);
-      this.state.bannedIps.push(bannedIp);
+    this.state = {'bannedIps': []};
     }
-  }
 
   onChange() {
-    const newBannedIps = Object.assign({}, BannedIpStore.getBannedIps());
-    console.log(newBannedIps);
-    this.setState(newBannedIps);
+    const blacklist = Object.assign({}, BannedIpStore.getBannedIps());
+    const newBannedIps = new Array();
+    for (let id in blacklist) {
+      newBannedIps.push(blacklist[id]);
+    }
+    console.log(newBannedIps)
+    Actions.get_blacklist();
+    this.setState({'bannedIps': newBannedIps});
   }
 
   componentDidMount() {
     BannedIpStore.addChangeListener(this.onChange);
+    Actions.get_blacklist();
+  }
+
+ componentDidUpdate() {
+    BannedIpStore.addChangeListener(this.onChange);
+    Actions.get_blacklist();
   }
 
   componentWillUnmount() {
@@ -34,27 +39,20 @@ class BannedIpTable extends React.Component {
   }
 
 
-  removeIp(id, event) {
-    Actions.remove_ip(id);
+  removeIp(ip, event) {
+    Actions.remove_ip(ip);
     event.preventDefault();
   }
 
   render() {
     const bannedIpTable = this.state.bannedIps.map((bannedIp) =>
       <tbody>
-        <tr key={bannedIp.id}>
-          <td> {bannedIp.id} </td>
-          <td> {bannedIp.ip} </td>
-          <td> {bannedIp.start_t.toDateString()} </td>
-          <td> {bannedIp.duration} </td>
-      {bannedIp.removed ? 
-          <td>yes</td>
-        :
-          <td>no</td>
-      }
-
+        <tr key={bannedIp.source}>
+          <td> {bannedIp.source} </td>
+          <td> {new Date(bannedIp.timestamp).toDateString()} </td>
+          <td> {bannedIp.duration/60000000000} </td>
       <td>
-        <Form onSubmit={(e) => this.removeIp(bannedIp.id, e)}>
+        <Form onSubmit={(e) => this.removeIp(bannedIp.source, e)}>
           <Button type="submit">
             remove
           </Button>
@@ -71,11 +69,9 @@ class BannedIpTable extends React.Component {
         <Table striped borderless hover size="sm">
           <thead>
             <tr>
-              <th> id </th>
               <th> ip </th>
               <th> start time </th>
               <th> duration(min) </th>
-              <th> removed </th>
               <th> remove button </th>
             </tr>
           </thead>
