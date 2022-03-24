@@ -43,8 +43,8 @@ class Policy extends React.Component {
         </h2>
       <div>
           Current Policy: {this.state.req_count} request times 
-          in {this.state.req_duration} minutes
-          blocked for {this.state.block_duration} minutes
+          in {this.state.req_duration.toPrecision(2)} minutes
+          blocked for {this.state.block_duration.toPrecision(2)} minutes
         </div>
         <PolicyForm onUpdate={this.onPolicyFormUpdate} req_count={0} req_duration={0} block_duration={0} />
       </div>

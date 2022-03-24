@@ -74,7 +74,7 @@ class BannedIpTable extends React.Component {
               <th> ip </th>
               <th> start time </th>
               <th> duration(min) </th>
-              <th> remove button </th>
+              <th> action </th>
             </tr>
           </thead>
           <tbody>
