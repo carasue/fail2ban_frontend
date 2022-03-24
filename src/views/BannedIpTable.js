@@ -10,16 +10,20 @@ class BannedIpTable extends React.Component {
     super(props);
 
     this.onChange = this.onChange.bind(this);
+    this.removeIp = this.removeIp.bind(this);
     this.state = {'bannedIps': []};
     }
 
   onChange() {
+    // #TO_ENHANCE: this will cause a fully change of the blacklist, 
+    // if you want a smooth delete animation, 
+    // you should compare and somewhat only delete that one,
+    // I do not how to implement that using the setState yet.
     const blacklist = Object.assign({}, BannedIpStore.getBannedIps());
     const newBannedIps = new Array();
     for (let id in blacklist) {
       newBannedIps.push(blacklist[id]);
     }
-    console.log(newBannedIps)
     Actions.get_blacklist();
     this.setState({'bannedIps': newBannedIps});
   }
@@ -39,27 +43,25 @@ class BannedIpTable extends React.Component {
   }
 
 
-  removeIp(ip, event) {
+  removeIp(ip, e) {
     Actions.remove_ip(ip);
-    event.preventDefault();
+    e.preventDefault();
   }
 
   render() {
     const bannedIpTable = this.state.bannedIps.map((bannedIp) =>
-      <tbody>
         <tr key={bannedIp.source}>
           <td> {bannedIp.source} </td>
           <td> {new Date(bannedIp.timestamp).toDateString()} </td>
           <td> {bannedIp.duration/60000000000} </td>
-      <td>
-        <Form onSubmit={(e) => this.removeIp(bannedIp.source, e)}>
-          <Button type="submit">
-            remove
-          </Button>
-        </Form>
-      </td>
+          <td>
+            <Form onSubmit={(e) => this.removeIp(bannedIp.source, e)}>
+                <Button type="submit">
+                  remove
+                </Button>
+            </Form>
+          </td>
         </tr>
-    </tbody>
       );
     return (
       <div>
@@ -68,14 +70,16 @@ class BannedIpTable extends React.Component {
         </h2>
         <Table striped borderless hover size="sm">
           <thead>
-            <tr>
+            <tr key={0}>
               <th> ip </th>
               <th> start time </th>
               <th> duration(min) </th>
               <th> remove button </th>
             </tr>
           </thead>
+          <tbody>
             {bannedIpTable}
+          </tbody>
         </Table>
     </div>
     )
