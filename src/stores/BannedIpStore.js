@@ -33,11 +33,18 @@ BannedIpStore.dispatchToken = AppDispatcher.register((action) => {
           }
           bannedIps = blacklist;
           BannedIpStore.emitChange();
-        });
+        }).
+          catch(err => {
+            console.log(err);
+          });
       break;
     case REMOVE_IP:
-      unblock(action.ip);
-      BannedIpStore.emitChange();
+      unblock(action.ip).then(res => {
+          bannedIps = bannedIps.filter(ip_item => ip_item['source'] != action.ip);
+          BannedIpStore.emitChange();
+        }, err => {
+          console.log(err);
+        });
       break;
   }
 });
