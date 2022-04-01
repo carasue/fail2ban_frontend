@@ -48,11 +48,24 @@ class BannedIpTable extends React.Component {
     e.preventDefault();
   }
 
+  timeConverter(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + 'h:' + min + 'm:' + sec +"s";
+    return time;
+  }
+
   render() {
     const bannedIpTable = this.state.bannedIps.map((bannedIp) =>
         <tr key={bannedIp.source}>
           <td> {bannedIp.source} </td>
-          <td> {new Date(bannedIp.timestamp).toDateString()} </td>
+          <td> {this.timeConverter(bannedIp.timestamp)} </td>
           <td> {bannedIp.duration/60000000000} </td>
           <td>
             <Form onSubmit={(e) => this.removeIp(bannedIp.source, e)}>
